@@ -1,0 +1,21 @@
+# Cross-Project Promoted Patterns
+# Pattern đã pass testing window + anh approve → move vào đây.
+# Apply tất cả projects.
+
+version: 1
+patterns: []
+
+# ───────────── FORMAT ─────────────
+# Khi pattern promoted:
+example:
+  - id: pattern-2026-05-30-001
+    title: "Material Icons import unused"
+    promoted_from: testing
+    promoted_at: 2026-06-13
+    promoted_by: hai
+    moved_to: core/checks/04b-material-icons-unused.md
+    initial_metrics:
+      true_positives: 8
+      false_positives: 0
+      fp_rate: 0.0
+    applied_projects: all

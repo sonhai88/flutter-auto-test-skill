@@ -1,0 +1,45 @@
+# GitHub Action: Auto-audit changed Flutter files trên PR
+# TODO: implement khi đã có Claude API SDK wrapper
+# Hiện chỉ là placeholder template
+#
+# KÍCH HOẠT khi sẵn sàng:
+#   1. gh auth refresh -h github.com -s workflow
+#   2. mkdir -p .github/workflows && cp docs/future-workflow-audit-pr.yml.template .github/workflows/audit-pr.yml
+#   3. git add . && git commit -m "ci: enable PR audit workflow" && git push
+
+name: Flutter Auto Audit
+on:
+  pull_request:
+    paths:
+      - '**/*.dart'
+      - 'pubspec.yaml'
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed Dart files
+        id: changed
+        run: |
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.dart' | head -20)
+          echo "files=$CHANGED" >> $GITHUB_OUTPUT
+
+      - name: Audit each file
+        run: |
+          # TODO: implement Claude API call
+          # For each file in steps.changed.outputs.files:
+          #   claude api audit <file> --project <auto-detect>
+          #   append result to /tmp/audit-report.md
+          echo "Audit logic chưa implement"
+
+      - name: Comment PR
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // TODO: post audit report as PR comment
+            console.log('TODO: post comment');

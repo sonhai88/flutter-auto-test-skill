@@ -1,0 +1,27 @@
+# Reports — local only, không commit
+reports/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Temp
+*.tmp
+*.log
+.cache/
+
+# Node (cho future tooling)
+node_modules/
+
+# Python (nếu add CLI sau)
+__pycache__/
+*.pyc
+.venv/
+
+# Local config
+.local.yaml

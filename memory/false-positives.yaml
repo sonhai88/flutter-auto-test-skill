@@ -1,0 +1,63 @@
+# False-Positive Database
+# Khi skill flag sai → anh confirm FP → entry mới được append vào đây.
+# Skill ĐỌC file này TRƯỚC mỗi audit (Gate 1 anti-FP filter).
+
+version: 1
+schema:
+  - id: unique slug (fp-NNN)
+  - rule_id: rule trigger FP
+  - pattern_signature: regex hoặc AST pattern để match TƯƠNG TỰ trong tương lai
+  - description: vì sao FP
+  - confirmed_by: ai confirm (hai|claude-mined|other)
+  - confirmed_at: YYYY-MM-DD
+  - screens_seen: ["LoginScreen", "..."] (track lan rộng)
+  - projects: ["itg-mobile", "lsite-mobile"] hoặc "all"
+  - test_cases: [file path examples] (regression test)
+  - status: active | deprecated
+  - notes: optional
+
+false_positives: []
+
+# ───────────── EXAMPLES (để dev hiểu format) ─────────────
+# Khi có FP đầu tiên, copy từ examples xuống false_positives:
+
+examples:
+  - id: fp-EXAMPLE-001
+    rule_id: states-coverage.missing-loading
+    pattern_signature: |
+      AsyncValue<.+>\.when\s*\(\s*loading:\s*\(
+    description: |
+      AsyncValue.when() với loading handler — đã có loading state.
+      Rule detect missing loading miss case này vì rely vào isLoading bool.
+    confirmed_by: hai
+    confirmed_at: 2026-06-15      # ngày FP confirmed
+    screens_seen:
+      - LoginScreen
+      - HomeScreen
+      - ProductDetailScreen
+    projects: all
+    test_cases:
+      - examples/fp/asyncvalue-when-loading.dart
+    status: active
+    notes: |
+      Issue tái xuất 3 lần ở 3 screen → cần permanent suppress.
+
+  - id: fp-EXAMPLE-002
+    rule_id: tokens-compliance.no-hardcode-color
+    pattern_signature: |
+      Color\.fromARGB\([^,]+,\s*0,\s*0,\s*0\s*\).*gradient
+    description: |
+      Color.fromARGB cho gradient overlay (đen với alpha).
+      Design system itg-mobile chưa có gradient token.
+    confirmed_by: hai
+    confirmed_at: 2026-06-20
+    screens_seen:
+      - HomeScreen
+      - ProductDetail
+    projects:
+      - itg-mobile
+    test_cases:
+      - examples/fp/gradient-overlay.dart
+    status: active
+    notes: |
+      Project-specific exception, KHÔNG apply lsite-mobile (strict hơn).

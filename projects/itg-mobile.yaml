@@ -1,0 +1,91 @@
+# ITG Mobile — Project Config
+# Updated 2026-05-27 — initial setup, anh review và fill chi tiết khi onboard
+
+project: itg-mobile
+display_name: ITG Mobile
+repo: null                         # TODO: anh fill GitHub URL
+root_path: null                    # TODO: anh fill path tới repo itg-mobile
+
+stack:
+  flutter: null                    # TODO: check pubspec.yaml
+  riverpod: 2.5.0                  # TODO: confirm version
+  riverpod_generator: null         # TODO: check
+  go_router: null                  # TODO: check
+  dio: null                        # TODO: check
+  design_system: lme_ui            # confirmed - dùng lme_ui
+  freezed: null                    # TODO: check
+
+figma:
+  file_key: null                   # TODO: anh fill Figma file key
+  default_node_url_format: figma.com/design/{file_key}/?node-id={node_id}
+
+paths:
+  features: lib/features
+  shared: lib/shared
+  theme: lib/theme
+  ignore:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/generated/**"
+
+rules:
+  tokens-compliance.no-hardcode-color:
+    severity: error
+    exceptions: []                 # anh add khi gặp FP confirmed
+
+  tokens-compliance.spacing-arbitrary:
+    severity: warn
+
+  tokens-compliance.fontsize-arbitrary:
+    severity: warn
+
+  tokens-compliance.radius-arbitrary:
+    severity: warn
+
+  architecture.no-setstate-feature:
+    severity: error
+
+  architecture.no-throw-cross-layer:
+    severity: error
+
+  architecture.dio-no-direct-instantiate:
+    severity: error
+
+  architecture.gorouter-no-navigator-push:
+    severity: warn
+    enabled: null                  # TODO: confirm có dùng GoRouter không
+
+  icons-compliance.no-material-icons:
+    severity: error
+    exceptions: []                 # anh add icons exception sau
+
+  icons-compliance.no-cupertino-icons:
+    severity: error
+
+  icons-compliance.material-import-unused:
+    severity: warn
+
+state_machines: {}
+
+api:
+  openapi_spec: null
+  base_url: null
+
+notify:
+  telegram_chat_id: null
+  slack_webhook: null
+
+metrics:
+  release_score_min: 80            # khởi đầu thấp, tăng dần
+  enabled_checks:
+    - tokens-compliance
+    - architecture
+    - icons-compliance
+
+history:
+  created: 2026-05-27
+  last_modified: 2026-05-27
+  modified_by: hai
+  notes: |
+    Config initial - cần anh fill các field TODO khi onboard project lần đầu.
+    Path placeholder - chưa scan project structure.

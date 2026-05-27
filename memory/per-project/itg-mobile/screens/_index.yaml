@@ -1,0 +1,19 @@
+# Per-Screen Memory Index
+# Auto-updated by skill mỗi lần audit screen mới.
+
+version: 1
+project: itg-mobile
+
+screens: []
+
+# ───────────── EXAMPLE ENTRY ─────────────
+# Khi audit screen đầu tiên, entry sẽ trông như:
+example:
+  - name: LoginScreen
+    file: lib/features/auth/screens/login_screen.dart
+    yaml_path: screens/LoginScreen.yaml
+    last_audited: 2026-06-01
+    last_score: 88
+    audit_count: 3
+    open_issues: 2
+    suppressed_count: 1

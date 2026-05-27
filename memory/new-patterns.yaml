@@ -1,0 +1,60 @@
+# Proposed Bug Patterns
+# Khi script mine git history hoặc anh report pattern mới → append vào đây.
+# Pattern lifecycle: PROPOSED → TESTING (14 ngày) → VALIDATED → ACTIVE.
+
+version: 1
+schema:
+  - id: pattern-YYYY-MM-DD-NNN
+  - title: short description
+  - status: PROPOSED | TESTING | VALIDATED | ACTIVE | DEPRECATED
+  - detected_from: git-history-mining | hai-manual-report | claude-suggestion
+  - detected_at: YYYY-MM-DD
+  - detection_logic: how to find this pattern
+  - examples_caught: list of git commits / files where pattern appeared
+  - testing_in_project: project slug used for testing window
+  - testing_started: YYYY-MM-DD
+  - testing_window_days: 14
+  - metrics:
+      true_positives: count
+      false_positives: count
+      fp_rate: float
+  - promote_at: target date for promotion
+  - notes: optional
+
+patterns: []
+
+# ───────────── EXAMPLES ─────────────
+examples:
+  - id: pattern-EXAMPLE-001
+    title: "Material Icons import unused"
+    status: PROPOSED
+    detected_from: git-history-mining
+    detected_at: 2026-05-30
+    detection_logic: |
+      File import 'package:flutter/material.dart' nhưng:
+      - Không có Icons.* nào
+      - Chỉ tham chiếu MaterialApp, Theme, ThemeData
+      → Đề xuất dùng widgets.dart thay vì material.dart full.
+    examples_caught:
+      - commit: a3f2e1b
+        file: lib/features/cart/cart_screen.dart
+        line: 3
+        note: chỉ dùng Container, Text — không cần material
+    testing_in_project: itg-mobile
+    testing_started: null            # khi anh approve → fill ngày
+    testing_window_days: 14
+    metrics:
+      true_positives: 0
+      false_positives: 0
+      fp_rate: 0.0
+    promote_at: null                 # tính sau khi testing
+    notes: |
+      Cần kiểm tra ko break flow — vài widget yêu cầu material context.
+
+# ───────────── PROMOTION CRITERIA ─────────────
+# Tiêu chí để pattern promote PROPOSED → ACTIVE:
+promotion_criteria:
+  min_true_positives: 3
+  max_fp_rate: 0.10                  # < 10% false positive rate
+  min_window_days: 14
+  required_manual_approval: true     # anh phải approve cuối cùng

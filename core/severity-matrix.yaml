@@ -1,0 +1,30 @@
+version: 1
+description: |
+  Severity decides whether an issue blocks release.
+  - error: MUST FIX, block CI/commit
+  - warn: SHOULD FIX, not blocking
+  - info: FYI, won't block
+
+  Score calculation:
+    score = 100 - (error_count * 10 + warn_count * 3 + info_count * 1)
+    clamp [0, 100]
+
+thresholds:
+  block_commit: 0           # 0 errors allowed before commit
+  block_pr_merge: 0         # 0 errors allowed in CI
+  release_score_min: 85     # release gate
+
+display_order:
+  - error
+  - warn
+  - info
+  - passed
+  - suppressed
+
+# Map check_id → display name in report
+labels:
+  error: MUST FIX
+  warn: SHOULD FIX
+  info: NICE TO HAVE
+  passed: PASSED
+  suppressed: SUPPRESSED

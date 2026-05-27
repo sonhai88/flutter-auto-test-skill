@@ -1,0 +1,115 @@
+version: 1
+description: Universal rules — applied to all projects unless overridden
+
+rules:
+  # ─────────────── TOKENS COMPLIANCE ───────────────
+  tokens-compliance.no-hardcode-color:
+    check_file: checks/02-tokens-compliance.md
+    severity: error
+    description: |
+      Phát hiện hardcode color như Color(0xFF...) hoặc Colors.X (trừ transparent).
+      Phải dùng token: LmeColors.X (lme_ui) hoặc Theme.of(context).colorScheme.X.
+    detection: |
+      Grep pattern: Color\(0x[0-9A-Fa-f]{8}\)
+      Grep pattern: Colors\.(?!transparent)[a-z]+
+      Loại trừ files: **/*.g.dart, **/*.freezed.dart, **/theme/**
+
+  tokens-compliance.spacing-arbitrary:
+    check_file: checks/02-tokens-compliance.md
+    severity: warn
+    description: |
+      Padding/Spacing dùng số tùy ý (không phải 4/8/12/16/20/24/32).
+      Khuyến nghị dùng LmeSpacing.X.
+    detection: |
+      Tìm EdgeInsets.* và SizedBox(width/height: N) với N không thuộc {4,8,12,16,20,24,32}
+
+  tokens-compliance.fontsize-arbitrary:
+    check_file: checks/02-tokens-compliance.md
+    severity: warn
+    description: |
+      fontSize không nằm trong LmeTypography scale (10/12/14/16/18/20/24/28/32).
+    detection: |
+      TextStyle(fontSize: N, ...) với N không thuộc scale
+
+  tokens-compliance.radius-arbitrary:
+    check_file: checks/02-tokens-compliance.md
+    severity: warn
+    description: |
+      borderRadius không thuộc {4, 8, 12, 16, full}.
+    detection: |
+      BorderRadius.circular(N) với N không thuộc scale
+
+  # ─────────────── ARCHITECTURE ───────────────
+  architecture.no-setstate-feature:
+    check_file: checks/03-architecture.md
+    severity: error
+    description: |
+      Trong feature/ folder không được dùng setState — phải Riverpod.
+      Allowed: AnimationController, TextEditingController setState là internal widget state nhỏ.
+    detection: |
+      Grep setState\( trong lib/features/**/*.dart
+      Loại trừ: file có AnimationController hoặc widget util thuần
+
+  architecture.no-throw-cross-layer:
+    check_file: checks/03-architecture.md
+    severity: error
+    description: |
+      Repository/service KHÔNG throw exception cross-layer.
+      Phải return Result<T, AppError> hoặc Either.
+    detection: |
+      Trong lib/features/**/repositories/ và lib/features/**/services/:
+      Tìm `throw ` mà KHÔNG nằm trong try-catch của method gọi từ ngoài
+
+  architecture.dio-no-direct-instantiate:
+    check_file: checks/03-architecture.md
+    severity: error
+    description: |
+      KHÔNG được tạo Dio() trực tiếp trong feature — phải dùng provider/DI.
+    detection: |
+      Grep `Dio()` trong lib/features/**/*.dart (trừ providers/di/)
+
+  architecture.gorouter-no-navigator-push:
+    check_file: checks/03-architecture.md
+    severity: warn
+    description: |
+      Nếu project dùng GoRouter, KHÔNG dùng Navigator.push/pop trực tiếp.
+      Dùng context.go / context.push.
+    detection: |
+      Grep Navigator\.(push|pop|pushNamed)\( trong lib/features/
+
+  architecture.notifier-missing-autodispose:
+    check_file: checks/03-architecture.md
+    severity: warn
+    description: |
+      Notifier không có autoDispose có thể leak state khi screen unmount.
+      Cân nhắc dùng @riverpod hoặc StateNotifierProvider.autoDispose.
+    detection: |
+      Tìm StateNotifierProvider mà không phải .autoDispose
+      Hoặc @Riverpod(keepAlive: true) — cần intentional không phải mặc định
+
+  # ─────────────── ICONS COMPLIANCE ───────────────
+  icons-compliance.no-material-icons:
+    check_file: checks/04-icons-compliance.md
+    severity: error
+    description: |
+      Cấm dùng Icons.X từ Material.
+      Phải dùng LmeIcons.X (lme_ui) hoặc custom SVG asset.
+    detection: |
+      Grep `Icons\.[a-z_]+` trong lib/ (trừ lib/theme/ nếu có override)
+
+  icons-compliance.no-cupertino-icons:
+    check_file: checks/04-icons-compliance.md
+    severity: error
+    description: Tương tự Material, cấm CupertinoIcons.
+    detection: |
+      Grep CupertinoIcons\.
+
+  icons-compliance.material-import-unused:
+    check_file: checks/04-icons-compliance.md
+    severity: warn
+    description: |
+      File import 'package:flutter/material.dart' nhưng chỉ dùng MaterialApp/Theme.
+      Có thể chỉ import widgets.dart + cupertino-free constants.
+    detection: |
+      Phân tích AST: nếu chỉ tham chiếu MaterialApp, ThemeData, Scaffold
+      thì có thể dùng widgets.dart thay vì material.dart full.

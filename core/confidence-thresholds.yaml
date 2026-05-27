@@ -1,0 +1,38 @@
+version: 1
+description: |
+  Confidence determines if Claude is sure enough to flag an issue.
+  Lower confidence → downgrade severity.
+
+  Formula:
+    confidence = ast_match_score * 0.7 + context_match_score * 0.3
+
+  ast_match_score:  did the regex/AST pattern match exactly? [0..1]
+  context_match_score: does surrounding code suggest the rule applies? [0..1]
+
+thresholds:
+  high_confidence: 0.9      # keep severity as defined
+  med_confidence: 0.6       # downgrade error → warn, warn → info
+  low_confidence: 0.0       # mark as info only (need human review)
+
+rules:
+  # Downgrade table per confidence band
+  high:
+    error: error
+    warn: warn
+    info: info
+
+  medium:
+    error: warn       # ERROR with med confidence → WARN
+    warn: info        # WARN with med confidence → INFO
+    info: info
+
+  low:
+    error: info       # Force to INFO if confidence too low
+    warn: info
+    info: info        # Don't even output if confidence is very low
+
+# When to require human confirmation
+require_human_review:
+  - confidence_below: 0.6
+  - new_pattern_status: TESTING
+  - first_audit_of_screen: true
