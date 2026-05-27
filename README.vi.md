@@ -2,9 +2,9 @@
 
 # 🔍 flutter-auto-test-skill
 
-### AI auditor for Flutter — replace 70% of QA workload
+### AI auditor cho Flutter — thay thế 70% workload tester
 
-**Verify Figma fidelity · Design system compliance · Architecture rules** — all from a Claude Code skill that learns from your feedback and gets sharper every audit.
+**Verify Figma fidelity · Design system compliance · Architecture rules** — tất cả qua một Claude Code skill học từ feedback của anh và sắc bén hơn sau mỗi audit.
 
 [![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](./CHANGELOG.md)
 [![Flutter](https://img.shields.io/badge/Flutter-3.0+-02569B?logo=flutter)](https://flutter.dev)
@@ -12,55 +12,55 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](#license)
 [![Self-improving](https://img.shields.io/badge/self--improving-yes-success)](#-self-improvement-loop)
 
-🌐 **[English](./README.md)** · [Tiếng Việt](./README.vi.md)
+🌐 [English](./README.md) · **[Tiếng Việt](./README.vi.md)**
 
 </div>
 
 ---
 
-## 💡 Why this exists
+## 💡 Tại sao có skill này
 
-Every Flutter team eventually faces the same QA cliff:
+Mọi team Flutter sớm muộn cũng gặp QA cliff giống nhau:
 
 ```
-Sprint 1:  3 screens, 1 tester, manual checks work fine
-Sprint 8:  40 screens, 1 tester, regression every release
-Sprint 12: 80 screens, hire 2 more testers? or automate?
+Sprint 1:  3 màn hình, 1 tester, check tay vẫn ổn
+Sprint 8:  40 màn hình, 1 tester, regression mỗi release
+Sprint 12: 80 màn hình, thuê thêm 2 tester? hay automate?
 ```
 
-Existing AI code review skills break for one of three reasons:
+Skill AI code review hiện có hay fail vì 1 trong 3 lý do:
 
-| 🚫 Problem | What happens |
+| 🚫 Vấn đề | Chuyện gì xảy ra |
 |---|---|
-| **False positives repeat** | Session 1 flags `missing-loading`, you correct: "using AsyncValue.when." Session 2 flags it again. Session 3 you turn off the skill. |
-| **No project context** | itg-mobile allows `Color.fromARGB` for gradients, lsite-mobile forbids it. Generic rule = noise = ignored. |
-| **No pattern accumulation** | Week 1 you find bug X. Week 3 a teammate writes the same bug. Skill doesn't learn. |
+| **False positive lặp lại** | Session 1 báo `missing-loading`, anh correct: "đã có AsyncValue.when". Session 2 báo lại. Session 3 anh tắt skill. |
+| **Không nhớ context project** | itg-mobile cho phép `Color.fromARGB` cho gradient, lsite-mobile cấm. Rule chung = noise = bị ignore. |
+| **Không tích lũy pattern** | Tuần 1 anh tìm ra bug X. Tuần 3 dev khác viết lại bug X. Skill không học. |
 
-**This skill fixes all three by design.**
+**Skill này fix cả 3 ngay từ design.**
 
 ---
 
-## ✨ What it catches
+## ✨ Skill catch được gì
 
 <table>
 <tr>
 <td width="50%">
 
 ### 🎨 Design System Compliance
-- Hardcoded colors → suggest design tokens
-- Arbitrary spacing → suggest scale `{4, 8, 12, 16, 24...}`
-- Font sizes outside type scale
-- Border radius drift from system
+- Hardcode color → đề xuất design token
+- Spacing tùy ý → đề xuất scale `{4, 8, 12, 16, 24...}`
+- Font size lệch type scale
+- Border radius drift khỏi system
 
 </td>
 <td width="50%">
 
 ### 🏗️ Architecture Rules
-- Riverpod patterns (autoDispose, no setState)
-- Dio interceptor presence
-- GoRouter type-safety + guards
+- Riverpod pattern (autoDispose, không setState)
+- Dio interceptor có chưa
+- GoRouter type-safe + guards
 - Repository pattern + Result type
-- No throw cross-layer
+- Không throw cross-layer
 
 </td>
 </tr>
@@ -68,17 +68,17 @@ Existing AI code review skills break for one of three reasons:
 <td>
 
 ### 🎭 Figma Fidelity *(v1.1+)*
-- Read Figma spec via MCP
-- Compare fontSize/color/padding pixel-by-pixel
-- Flag drift between code and design
+- Đọc Figma spec qua MCP
+- So sánh fontSize/color/padding pixel-by-pixel
+- Flag drift giữa code và design
 
 </td>
 <td>
 
 ### 🧩 Icons Compliance
-- Material Icons → flag for design system replacement
+- Material Icons → flag để thay bằng DS
 - Cupertino Icons → flag
-- Unused `material.dart` imports
+- Import `material.dart` không cần thiết
 
 </td>
 </tr>
@@ -86,16 +86,16 @@ Existing AI code review skills break for one of three reasons:
 <td>
 
 ### 🌐 i18n Check *(v1.1+)*
-- Hardcoded Vietnamese/Japanese strings
-- Missing localization keys
-- Inconsistent fallbacks
+- Hardcode chuỗi tiếng Việt/Nhật
+- Thiếu key localization
+- Fallback không nhất quán
 
 </td>
 <td>
 
 ### 🎬 States Coverage *(v1.1+)*
-- Missing `loading` / `error` / `empty` / `success` states
-- Inferred from notifier transitions
+- Thiếu state `loading` / `error` / `empty` / `success`
+- Suy từ notifier transitions
 
 </td>
 </tr>
@@ -110,27 +110,27 @@ Existing AI code review skills break for one of three reasons:
 git clone https://github.com/sonhai88/flutter-auto-test-skill.git
 cd flutter-auto-test-skill
 
-# 2. Install (creates symlink ~/.claude/skills/flutter-auto-test/)
+# 2. Install (tạo symlink ~/.claude/skills/flutter-auto-test/)
 ./scripts/install.sh
 
-# 3. Restart Claude Code, then in any Flutter project:
+# 3. Restart Claude Code, sau đó trong bất kỳ project Flutter nào:
 ```
 
 ```
 /flutter-auto-test lib/features/auth/login_screen.dart
 ```
 
-Or just type naturally:
+Hoặc gõ tự nhiên:
 > *"audit cho anh màn hình LoginPage"*
 > *"check compliance file home_page.dart"*
 > *"xem code khớp Figma chưa, URL: figma.com/design/.../?node-id=63-121"*
 
 ---
 
-## 🛡️ How it avoids false positives — 4-gate filter
+## 🛡️ Cách skill tránh false positive — 4-gate filter
 
 ```
-                       Issue candidate detected
+                       Phát hiện issue candidate
                                  │
                                  ▼
             ┌──────────────────────────────────────────┐
@@ -140,21 +140,21 @@ Or just type naturally:
             │  ─────────────────────────────────────── │
             │  ✓ match → SUPPRESS (log "fp-001")       │
             └─────────────────┬────────────────────────┘
-                              │ no match
+                              │ không match
                               ▼
             ┌──────────────────────────────────────────┐
             │  GATE 2 ─ Per-Screen Quirks              │
             │  memory/per-project/<p>/screens/<s>.yaml │
-            │  Line in screen's exception range?       │
+            │  Line trong exception range của screen?  │
             │  ─────────────────────────────────────── │
-            │  ✓ match → SUPPRESS (with reason)        │
+            │  ✓ match → SUPPRESS (có lý do)           │
             └─────────────────┬────────────────────────┘
-                              │ no match
+                              │ không match
                               ▼
             ┌──────────────────────────────────────────┐
             │  GATE 3 ─ Project Exceptions             │
             │  projects/<project>.yaml                 │
-            │  Rule allowed for this project context?  │
+            │  Rule có exception cho project này?      │
             │  ─────────────────────────────────────── │
             │  ✓ match → DOWNGRADE (error → warn)      │
             └─────────────────┬────────────────────────┘
@@ -165,33 +165,33 @@ Or just type naturally:
             │  confidence = AST_match × 0.7            │
             │             + context_match × 0.3        │
             │  ─────────────────────────────────────── │
-            │  ≥0.9 → keep severity                    │
-            │  0.6-0.9 → downgrade to WARN             │
-            │  <0.6 → demote to INFO (need review)     │
+            │  ≥0.9 → giữ severity                     │
+            │  0.6-0.9 → downgrade thành WARN          │
+            │  <0.6 → hạ xuống INFO (cần review tay)   │
             └─────────────────┬────────────────────────┘
                               │
                               ▼
-                  ✅ FLAG with evidence + fix
+                  ✅ FLAG với evidence + fix
 ```
 
-**Every flagged issue carries**:
+**Mỗi issue được flag PHẢI có**:
 - File + line number
-- Code snippet (proof)
-- Proposed fix
+- Code snippet (bằng chứng)
+- Đề xuất fix
 - Confidence score
-- Rationale (why this rule applies)
+- Lý do (vì sao rule này apply)
 
-No "looks correct overall" outputs. No vague claims. Evidence-only.
+Không có output kiểu "looks correct overall". Không claim mơ hồ. Chỉ evidence.
 
 ---
 
 ## 🧠 Self-Improvement Loop
 
-The skill **gets sharper every audit**. Three mechanisms:
+Skill **sắc bén hơn sau mỗi audit**. Ba cơ chế:
 
 ### 1. Feedback Parser
 
-After every report, you can reply in plain language:
+Sau mỗi report, anh có thể reply tự nhiên:
 
 ```
 "FP: tokens-compliance.no-hardcode-color ở SplashPage.dart:175 — SystemUiOverlayStyle config"
@@ -200,41 +200,41 @@ After every report, you can reply in plain language:
 "OK fix nhé"
 ```
 
-The skill parses → proposes YAML update → bumps version → commits memory change.
+Skill parse → propose YAML update → bump version → commit memory change.
 
 ### 2. Pattern Lifecycle
 
-Bug patterns aren't added by humans — they're **mined from your git history** and graduated through validation stages:
+Bug pattern KHÔNG được human nhập tay — chúng **mined từ git history** của anh và graduate qua các validation stages:
 
 ```
-┌──────────┐    detected from git log --grep="fix:"
-│ DETECTED │    or manual report
+┌──────────┐    detect từ git log --grep="fix:"
+│ DETECTED │    hoặc anh report tay
 └────┬─────┘
      ▼
-┌──────────┐    Auto-saved to memory/new-patterns.yaml
-│ PROPOSED │    Wait for human approval
+┌──────────┐    Auto-save vào memory/new-patterns.yaml
+│ PROPOSED │    Chờ anh approve
 └────┬─────┘
      ▼
-┌──────────┐    Active in ONE project (testing window)
-│ TESTING  │    Track true/false positive rate
-└────┬─────┘    Need: ≥3 TP, ≤10% FP rate, ≥14 days
+┌──────────┐    Active trong MỘT project (testing window)
+│ TESTING  │    Track tỷ lệ true/false positive
+└────┬─────┘    Cần: ≥3 TP, ≤10% FP rate, ≥14 ngày
      ▼
-┌──────────┐    Promoted to core/checks/
-│ VALIDATED│    Apply across ALL projects
+┌──────────┐    Promote vào core/checks/
+│ VALIDATED│    Apply cross TẤT CẢ projects
 └────┬─────┘
      ▼
-┌──────────┐    Live in production rule set
+┌──────────┐    Live trong production rule set
 │ ACTIVE   │
 └────┬─────┘
      ▼
-┌──────────┐    If FP rate spikes or rule obsolete
+┌──────────┐    Nếu FP rate tăng vọt hoặc rule lỗi thời
 │DEPRECATED│
 └──────────┘
 ```
 
 ### 3. Multi-Project Config Layering
 
-Same rule, different projects, different behavior:
+Cùng 1 rule, project khác nhau, xử lý khác nhau:
 
 ```yaml
 # core/rules.yaml ─ universal defaults
@@ -245,7 +245,7 @@ tokens-compliance.no-hardcode-color:
                 
 # projects/itg-mobile.yaml ─ legacy stack
 tokens-compliance.no-hardcode-color:
-  severity: warn        # downgrade — no design system yet
+  severity: warn        # downgrade — chưa có design system
   exceptions:
     - pattern: Color.fromARGB
       context: gradient_overlay
@@ -261,35 +261,35 @@ quirks:
 
 ---
 
-## 📊 Real-world example
+## 📊 Ví dụ thực tế
 
-Audited **4 screens** of a 170k-line Flutter app on day 1:
+Audit **4 màn hình** của 1 app Flutter 170k dòng trong ngày đầu tiên:
 
-| Screen | Lines | Score | Hardcode | print() debug |
+| Màn hình | Lines | Score | Hardcode | print() debug |
 |---|---|---|---|---|
 | SplashPage | 207 | 88/100 | 3 | 11 |
 | LoginPage | 309 | 38/100 | 19 | 3 |
 | RegisterPage | 501 | 14/100 | 27 | 4 |
 | HomePage | 811 | 11/100 | 28 | 23 |
-| **Total** | **1,828** | **37.75 avg** | **77** | **41** |
+| **Total** | **1,828** | **37.75 trung bình** | **77** | **41** |
 
-**Findings on day 1**:
-- 77 hardcoded colors → recommended `AppColors` extraction (1-day work)
-- 41 `print()` debug statements → recommended logger migration
+**Findings ngày 1**:
+- 77 hardcode colors → đề xuất extract `AppColors` (1 ngày work)
+- 41 `print()` debug statements → đề xuất migrate logger
 - Cross-screen pattern auto-promoted PROPOSED → TESTING (`pattern-2026-05-27-001`)
-- 1 false positive identified and added to global FP database (`fp-001` SystemUiOverlayStyle exempt)
+- 1 false positive identified và add vào global FP database (`fp-001` SystemUiOverlayStyle exempt)
 
-**Expected after Priority 1 fixes**: avg score 37.75 → **76.25** (+38.5 lift).
+**Expected sau khi fix Priority 1**: avg score 37.75 → **76.25** (+38.5 lift).
 
-> [Full audit reports here](./reports/2026-05-27/itg-mobile/) — including weekly summary and feedback demo.
+> [Full audit reports đây](./reports/2026-05-27/itg-mobile/) — bao gồm weekly summary và feedback demo.
 
 ---
 
-## 📂 Project Structure
+## 📂 Cấu trúc Project
 
 ```
 flutter-auto-test-skill/
-├── SKILL.md                          # Entry point — Claude reads first
+├── SKILL.md                          # Entry point — Claude đọc trước
 ├── VERSION                           # Semantic version (1.0.1)
 ├── CHANGELOG.md
 │
@@ -327,7 +327,7 @@ flutter-auto-test-skill/
 │
 ├── prompts/                          ┐
 │   ├── audit-screen.md               │  LLM PROMPTS
-│   ├── feedback-parser.md            │  (separate from checks)
+│   ├── feedback-parser.md            │  (tách rời với checks)
 │   └── pattern-miner.md              ┘
 │
 └── scripts/                          ┐
@@ -341,13 +341,13 @@ flutter-auto-test-skill/
 
 ## ⚙️ Configuration
 
-### 1. Create project config
+### 1. Tạo project config
 
 ```bash
 cp projects/_template.yaml projects/my-app.yaml
 ```
 
-### 2. Fill in your stack
+### 2. Fill stack của anh
 
 ```yaml
 project: my-app
@@ -358,15 +358,15 @@ stack:
   riverpod: 2.5.0
   go_router: 14.0.0
   dio: 5.4.0
-  design_system: lme_ui@2.1.0      # or "custom" or "none"
+  design_system: lme_ui@2.1.0      # hoặc "custom" hoặc "none"
 
 figma:
-  file_key: ABC123XYZ              # from figma.com/design/<file_key>/
+  file_key: ABC123XYZ              # lấy từ figma.com/design/<file_key>/
 
 rules:
   tokens-compliance.no-hardcode-color:
     severity: error
-    exceptions: []                  # add as you confirm them
+    exceptions: []                  # add khi anh confirm
 
 metrics:
   release_score_min: 85
@@ -376,7 +376,7 @@ metrics:
     - icons-compliance
 ```
 
-### 3. (Optional) Notify Telegram on weekly summary
+### 3. (Optional) Notify Telegram weekly summary
 
 ```yaml
 notify:
@@ -387,7 +387,7 @@ notify:
 
 ## 🗺️ Roadmap
 
-### v1.0 ─ Foundation *(current)*
+### v1.0 ─ Foundation *(hiện tại)*
 - [x] 3 core checks: tokens / architecture / icons
 - [x] 4-gate anti-FP filtering
 - [x] Multi-project config layering
@@ -396,11 +396,11 @@ notify:
 - [x] Manual feedback loop
 
 ### v1.1 ─ Figma + Coverage
-- [ ] Figma fidelity check via MCP
+- [ ] Figma fidelity check qua MCP
 - [ ] i18n check
 - [ ] States coverage (loading/error/empty/success)
 - [ ] Git history mining cron
-- [ ] CI integration via GitHub Actions
+- [ ] CI integration qua GitHub Actions
 
 ### v1.2 ─ Spec & Contract
 - [ ] Spec compliance (markdown → code trace)
@@ -409,9 +409,9 @@ notify:
 - [ ] Cross-file analysis
 
 ### v2.0 ─ Web Dashboard *(stretch)*
-- [ ] React dashboard for QA leads
-- [ ] Trending across releases
-- [ ] Jira integration
+- [ ] React dashboard cho QA lead
+- [ ] Trending qua các release
+- [ ] Tích hợp Jira
 
 ---
 
@@ -419,14 +419,14 @@ notify:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ LAYER 1 ─ Developer local (this skill)                       │
-│ Dev codes → /flutter-auto-test → fix issues → commit         │
-│ Cost: free (within Claude Code subscription)                 │
+│ LAYER 1 ─ Dev local (skill này)                              │
+│ Dev code → /flutter-auto-test → fix → commit                 │
+│ Cost: free (trong Claude Code subscription)                  │
 └──────────────────────────┬──────────────────────────────────┘
                            │
 ┌─────────────────────────────────────────────────────────────┐
 │ LAYER 2 ─ Pre-commit hook (planned)                          │
-│ git commit → fast tokens/icons check → block if errors       │
+│ git commit → fast tokens/icons check → block nếu có error    │
 └──────────────────────────┬──────────────────────────────────┘
                            │
 ┌─────────────────────────────────────────────────────────────┐
@@ -443,66 +443,66 @@ notify:
 
 ---
 
-## ❌ What this skill is NOT
+## ❌ Skill này KHÔNG phải gì
 
-Being honest matters:
+Honest matters:
 
-- **❌ Not a replacement for human QA** — replaces ~70% of compliance work. Exploratory testing, UX feel, real-device quirks still need a human.
-- **❌ Not a runtime test** — verifies code structure, NOT app behavior at runtime. Pair with [`patrol`](https://patrol.leancode.co) for E2E.
-- **❌ Not a linter** — Dart analyzer + linter rules still required for syntax/style. This catches **semantic compliance** (design system, architecture, spec adherence).
-- **❌ Not perfect** — false positives happen. The whole point of the FP database is to make them happen **only once**.
+- **❌ KHÔNG thay thế tester thật** — thay ~70% compliance work. Exploratory testing, UX feel, real-device quirks vẫn cần người.
+- **❌ KHÔNG phải runtime test** — verify code structure, KHÔNG verify app behavior khi chạy. Cặp với [`patrol`](https://patrol.leancode.co) cho E2E.
+- **❌ KHÔNG phải linter** — Dart analyzer + linter vẫn cần cho syntax/style. Skill này catch **semantic compliance** (design system, architecture, spec).
+- **❌ KHÔNG perfect** — false positive vẫn xảy ra. Cả ý nghĩa của FP database là làm cho FP xảy ra **chỉ MỘT lần**.
 
 ---
 
 ## 🧑‍💻 Contributing
 
-This is currently a single-developer project tuned for specific Flutter stacks (lme_ui + Riverpod + Dio + GoRouter), but PRs are welcome for:
+Đây là project solo dev tune cho Flutter stack cụ thể (lme_ui + Riverpod + Dio + GoRouter), nhưng PR welcome cho:
 
-- Adding new project templates (`projects/<your-stack>.yaml`)
-- Proposing new checks (`core/checks/NN-<name>.md`)
-- Improving detection regex / AST patterns
+- Add project template mới (`projects/<your-stack>.yaml`)
+- Đề xuất check mới (`core/checks/NN-<name>.md`)
+- Cải thiện detection regex / AST pattern
 - Documentation / examples
 
-Fork → branch → PR. Run `./scripts/install.sh` locally to test.
+Fork → branch → PR. Chạy `./scripts/install.sh` local để test.
 
 ---
 
-## 📚 Related Tools
+## 📚 Tools liên quan
 
-| Tool | Purpose | When to use |
+| Tool | Mục đích | Khi nào dùng |
 |---|---|---|
 | [patrol](https://patrol.leancode.co) | E2E testing | Critical user flows |
 | [golden_toolkit](https://pub.dev/packages/golden_toolkit) | Visual regression | Design system snapshots |
 | [mocktail](https://pub.dev/packages/mocktail) | Unit test mocking | Business logic tests |
 | [very_good_analysis](https://pub.dev/packages/very_good_analysis) | Linter rules | Syntax + style enforcement |
-| **flutter-auto-test-skill** *(this)* | **Semantic compliance** | **Design / architecture / spec audit** |
+| **flutter-auto-test-skill** *(skill này)* | **Semantic compliance** | **Design / architecture / spec audit** |
 
 ---
 
 ## 📄 License
 
-MIT — use freely, adapt to your stack.
+MIT — dùng tự do, adapt cho stack của anh.
 
 ---
 
 ## 🙏 Credits
 
-Built by [@sonhai88](https://github.com/sonhai88) as part of a personal Claude Code skill ecosystem ([haiclaudeskill](https://github.com/sonhai88/haiclaudeskill)).
+Built by [@sonhai88](https://github.com/sonhai88) như một phần của Claude Code skill ecosystem cá nhân ([haiclaudeskill](https://github.com/sonhai88/haiclaudeskill)).
 
-Distilled from production patterns observed across:
+Distilled từ production pattern observe trên:
 - 4+ Flutter projects (lme_ui, lsite-mobile, itg-mobile, sailo)
-- 100+ commits of QA cycle pain
-- 13 testers' daily workload, broken down into automatable vs human-only
+- 100+ commits của QA cycle pain
+- 13 việc tester làm hàng ngày, bóc tách thành automatable vs human-only
 
 ---
 
 <div align="center">
 
 **[🐛 Report issue](https://github.com/sonhai88/flutter-auto-test-skill/issues)** ·
-**[📖 Read SKILL.md](./SKILL.md)** ·
-**[📋 See CHANGELOG](./CHANGELOG.md)** ·
-**[📊 View example audits](./reports/)**
+**[📖 Đọc SKILL.md](./SKILL.md)** ·
+**[📋 Xem CHANGELOG](./CHANGELOG.md)** ·
+**[📊 Xem audit thật](./reports/)**
 
-Made with ❤️ for Flutter teams tired of manual QA cycles.
+Made with ❤️ cho các team Flutter chán cycle QA tay.
 
 </div>
