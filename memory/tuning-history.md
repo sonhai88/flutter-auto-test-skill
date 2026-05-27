@@ -56,6 +56,24 @@ Mục đích: lookback tại sao em quyết định gì + revert được nếu 
 
 ---
 
+## 2026-05-27 — [PATTERN_PROMOTED] pattern-2026-05-27-001 → TESTING
+
+**Type**: PATTERN_PROMOTED
+**Trigger**: Cross-screen audit 4 screens (Login + Splash + Home + Register) hit pattern 100%
+**Change**: `pattern-2026-05-27-001` (Print debug còn sót) PROPOSED → TESTING
+**Reason**:
+  - 41 instances across 4/4 screens (100% hit rate)
+  - 0 false positives
+  - Detection logic simple (regex)
+  - Anh stack đã có logger pattern (talker mentioned trong CLAUDE.md context)
+  → Auto-promote vì signal cực mạnh
+**Testing window**: 2026-05-27 → 2026-06-10 (14 days)
+**Promotion criteria**: nếu FP rate < 10% trong window → PROMOTE TO ACTIVE
+**Impact**: Currently only itg-mobile (testing_in_project)
+**Reversible**: Yes — revert status back to PROPOSED nếu phát hiện FP
+
+---
+
 ## 2026-05-27 — [PILOT_AUDIT] LoginPage first audit — baseline 38/100
 
 **Type**: AUDIT

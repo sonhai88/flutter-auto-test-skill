@@ -1,0 +1,37 @@
+screen: SplashPage
+file: lib/page/splash/splash_page.dart
+project: itg-mobile
+file_size_lines: 207
+last_audited: 2026-05-27
+last_score: 88
+audit_count: 1
+
+quirks: []
+custom_rules: []
+
+watch_list:
+  - issue: 11 print() debug statements
+    detected: 2026-05-27
+    plan: Replace với logger package
+  - issue: 33 lines commented-out dead code (L88-121, checkUpdateApp)
+    detected: 2026-05-27
+    plan: Delete hoặc move sang _archived/
+
+history:
+  - date: 2026-05-27
+    score: 88
+    audited_by: claude-via-skill
+    issues_total: 6
+    errors: 0
+    warns: 3
+    infos: 3
+    suppressed: 0
+    notes: First audit. Cleaner than LoginPage but 11 print() — pattern lan rộng.
+
+bugs_fixed: []
+open_issues:
+  - id: hardcode-colors-3
+    rule: tokens-compliance.no-hardcode-color
+    count: 3
+    severity: warn
+    first_detected: 2026-05-27

@@ -16,7 +16,27 @@ schema:
   - status: active | deprecated
   - notes: optional
 
-false_positives: []
+false_positives:
+  - id: fp-001
+    rule_id: tokens-compliance.no-hardcode-color
+    pattern_signature: |
+      SystemUiOverlayStyle\([^)]*statusBar(Color|IconBrightness|Brightness):
+    description: |
+      Colors trong SystemUiOverlayStyle là system overlay config (status bar styling),
+      KHÔNG phải UI render color. Không cần extract design token.
+    confirmed_by: hai-via-demo
+    confirmed_at: 2026-05-27
+    screens_seen:
+      - SplashPage
+      - LoginPage
+    projects: all
+    test_cases:
+      - SystemUiOverlayStyle(statusBarColor: Colors.white)
+      - SystemUiOverlayStyle(statusBarIconBrightness: Brightness.dark)
+    status: active
+    notes: |
+      Pattern này lan rộng tất cả project Flutter có status bar config.
+      Save FP để skill không nhắc lại trong future audit cross-project.
 
 # ───────────── EXAMPLES (để dev hiểu format) ─────────────
 # Khi có FP đầu tiên, copy từ examples xuống false_positives:

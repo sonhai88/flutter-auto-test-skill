@@ -1,0 +1,36 @@
+screen: RegisterPage
+file: lib/page/auth/register/register_page.dart
+project: itg-mobile
+file_size_lines: 501
+last_audited: 2026-05-27
+last_score: 14
+audit_count: 1
+
+quirks: []
+custom_rules: []
+
+watch_list:
+  - issue: 27 hardcode colors — form-heavy structure giống LoginPage
+    detected: 2026-05-27
+    plan: Reuse AppColors khi extract cho LoginPage
+  - issue: 4 print() debug
+    detected: 2026-05-27
+    plan: Migrate sang logger
+
+history:
+  - date: 2026-05-27
+    score: 14
+    audited_by: claude-via-skill
+    issues_total: 32
+    errors: 0
+    warns: 27
+    infos: 5
+    suppressed: 0
+
+bugs_fixed: []
+open_issues:
+  - id: hardcode-colors-27
+    rule: tokens-compliance.no-hardcode-color
+    count: 27
+    severity: warn
+    first_detected: 2026-05-27

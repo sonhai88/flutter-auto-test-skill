@@ -2,6 +2,15 @@ version: 1
 project: itg-mobile
 
 screens:
+  - name: SplashPage
+    file: lib/page/splash/splash_page.dart
+    yaml_path: screens/SplashPage.yaml
+    last_audited: 2026-05-27
+    last_score: 88
+    audit_count: 1
+    open_issues: 3
+    suppressed_count: 0
+
   - name: LoginPage
     file: lib/page/auth/login/login_page.dart
     yaml_path: screens/LoginPage.yaml
@@ -11,9 +20,30 @@ screens:
     open_issues: 19
     suppressed_count: 1
 
-# ───────────── STATS ─────────────
+  - name: RegisterPage
+    file: lib/page/auth/register/register_page.dart
+    yaml_path: screens/RegisterPage.yaml
+    last_audited: 2026-05-27
+    last_score: 14
+    audit_count: 1
+    open_issues: 27
+    suppressed_count: 0
+
+  - name: HomePage
+    file: lib/page/home/home_page.dart
+    yaml_path: screens/HomePage.yaml
+    last_audited: 2026-05-27
+    last_score: 11
+    audit_count: 1
+    open_issues: 28
+    suppressed_count: 4
+
 stats:
-  total_screens_audited: 1
-  avg_score: 38
-  trend: baseline
+  total_screens_audited: 4
+  avg_score: 37.75
+  min_score: 11
+  max_score: 88
+  total_hardcode_colors: 77
+  total_print_debug: 41
+  trend: baseline (first batch)
   last_updated: 2026-05-27

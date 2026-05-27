@@ -1,0 +1,54 @@
+screen: HomePage
+file: lib/page/home/home_page.dart
+project: itg-mobile
+file_size_lines: 811
+last_audited: 2026-05-27
+last_score: 11
+audit_count: 1
+
+quirks:
+  - rule_id: tokens-compliance.no-hardcode-color
+    line_range: [558, 668]
+    reason: |
+      BottomNav legacy widget depend on package chưa cho parametrize color.
+      Apply quirk này khi anh confirm trong demo feedback cycle 2026-05-27.
+      Re-evaluate khi migrate sang custom BottomNav.
+    expires: null
+    confirmed_by: hai-via-demo
+    confirmed_at: 2026-05-27
+custom_rules: []
+
+watch_list:
+  - issue: 28 hardcode colors lan rộng — file lớn nhất, density UI cao
+    detected: 2026-05-27
+    plan: Extract `lib/config/app_colors.dart` ưu tiên cho HomePage
+  - issue: 23 print() debug — count cao nhất trong 3 screen audit
+    detected: 2026-05-27
+    plan: Migrate sang logger package
+  - issue: File 811 lines, mix WidgetsBindingObserver + socket + permissions + UI
+    detected: 2026-05-27
+    plan: Refactor thành multiple widget/service files (Single Responsibility)
+  - issue: Dead code block L87-130 (initDeepLinks commented out)
+    detected: 2026-05-27
+    plan: Decide keep or delete
+
+history:
+  - date: 2026-05-27
+    score: 11
+    audited_by: claude-via-skill
+    issues_total: 33
+    errors: 0
+    warns: 28
+    infos: 5
+    suppressed: 4
+    notes: |
+      Highest-burden screen audit so far. 811 lines + 28 hardcode colors + 23 prints.
+      Top priority cho design system migration.
+
+bugs_fixed: []
+open_issues:
+  - id: hardcode-colors-28
+    rule: tokens-compliance.no-hardcode-color
+    count: 28
+    severity: warn
+    first_detected: 2026-05-27

@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.1] - 2026-05-27
+
+### Added (memory data)
+- 4 screen audits (itg-mobile): LoginPage, SplashPage, HomePage, RegisterPage
+- FP database first entry: `fp-001` (SystemUiOverlayStyle exempt)
+- Screen quirk first entry: HomePage BottomNav L558-668 exempt
+- Pattern PROMOTED PROPOSED → TESTING: `pattern-2026-05-27-001` (print debug)
+- 2 new patterns still PROPOSED: responsive magic numbers, nested setState chain
+
+### Stats
+- 4/4 screens audited contain print() pattern (100% hit rate, 41 instances)
+- Avg score itg-mobile: 37.75/100 (baseline, no design system)
+- Project itg-mobile config tuned cho legacy stack (Provider + http + Navigator)
+
 ## [1.0.0] - 2026-05-27
 
 ### Added
