@@ -1,0 +1,55 @@
+screen: LoginPage
+file: lib/page/auth/login/login_page.dart
+project: itg-mobile
+file_size_lines: 309
+last_audited: 2026-05-27
+last_score: 38
+audit_count: 1
+
+# ─────────────── QUIRKS (rule-suppress local) ───────────────
+quirks: []
+# Sẽ append khi anh confirm: "Quirk: <rule_id> line X-Y vì <reason>"
+
+# ─────────────── CUSTOM RULES (per-screen overrides) ───────────────
+custom_rules: []
+
+# ─────────────── WATCH LIST ───────────────
+watch_list:
+  - issue: 19 hardcode colors — chưa có design system
+    detected: 2026-05-27
+    plan: Tạo lib/config/app_colors.dart extract constants → re-audit
+  - issue: 3 print() debug còn sót (line 62, 64, 92)
+    detected: 2026-05-27
+    plan: Replace với logger package hoặc xoá trước release
+  - issue: nested setState trong .then().catchError() làm khó debug
+    detected: 2026-05-27
+    plan: Refactor sang async/await + try-catch
+
+# ─────────────── HISTORY ───────────────
+history:
+  - date: 2026-05-27
+    score: 38
+    audited_by: claude-via-skill
+    issues_total: 29
+    errors: 0
+    warns: 19
+    infos: 10
+    suppressed: 1
+    bugs_fixed: []
+    new_issues: []                  # baseline audit
+    notes: |
+      First audit (baseline). Score thấp do legacy stack chưa có design tokens.
+      Đa số issue = hardcode colors (15 entries) — cần extract sang AppColors.
+      Architecture & icons checks DISABLED vì project dùng Provider + http, không Riverpod/Dio.
+
+# ─────────────── BUGS FIXED (cumulative) ───────────────
+bugs_fixed: []
+
+# ─────────────── OPEN ISSUES (cần track tới khi fix) ───────────────
+open_issues:
+  - id: hardcode-colors-all
+    rule: tokens-compliance.no-hardcode-color
+    count: 19
+    severity: warn
+    first_detected: 2026-05-27
+    notes: Chờ design system migrate

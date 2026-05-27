@@ -1,69 +1,94 @@
-# ITG Mobile — Project Config
-# Updated 2026-05-27 — initial setup, anh review và fill chi tiết khi onboard
+# ITG Mobile (instagram_app) — Project Config
+# Updated 2026-05-27 — initial scan results
+#
+# Stack thật KHÁC default Riverpod/Dio/GoRouter/lme_ui:
+# - State: Provider 6.x (no Riverpod)
+# - Networking: http 1.x (no Dio)
+# - Routing: Navigator (no GoRouter)
+# - DS: KHÔNG có lme_ui — Material default + custom widget
 
 project: itg-mobile
-display_name: ITG Mobile
-repo: null                         # TODO: anh fill GitHub URL
-root_path: null                    # TODO: anh fill path tới repo itg-mobile
+display_name: ITG Mobile (instagram_app)
+repo: null
+root_path: /Volumes/hai/itg-mobile
 
 stack:
-  flutter: null                    # TODO: check pubspec.yaml
-  riverpod: 2.5.0                  # TODO: confirm version
-  riverpod_generator: null         # TODO: check
-  go_router: null                  # TODO: check
-  dio: null                        # TODO: check
-  design_system: lme_ui            # confirmed - dùng lme_ui
-  freezed: null                    # TODO: check
+  flutter: ">=3.0.0 <4.0.0"
+  riverpod: null                   # KHÔNG dùng — dùng Provider
+  state_mgmt: provider@^6.0.4
+  riverpod_generator: false
+  go_router: null                  # KHÔNG dùng — dùng Navigator
+  dio: null                        # KHÔNG dùng — dùng http
+  http: ^1.2.1
+  design_system: none              # KHÔNG có lme_ui
+  freezed: false
 
 figma:
-  file_key: null                   # TODO: anh fill Figma file key
+  file_key: null                   # TODO: anh fill nếu có Figma
   default_node_url_format: figma.com/design/{file_key}/?node-id={node_id}
 
 paths:
-  features: lib/features
-  shared: lib/shared
-  theme: lib/theme
+  features: lib/page                # cấu trúc cũ: lib/page/<feature>/
+  shared: lib/common
+  theme: lib/config                 # config chứa theme
   ignore:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
     - "**/generated/**"
+    - "lib/firebase_options.dart"
+    - "lib/l10n/**"                # generated localization
 
 rules:
+  # ─── Tokens (apply chung, không phụ thuộc DS) ───
   tokens-compliance.no-hardcode-color:
-    severity: error
-    exceptions: []                 # anh add khi gặp FP confirmed
+    severity: warn                  # downgrade error→warn vì project không có DS thay thế
+    exceptions: []
+    note: |
+      Project chưa có design system tokens.
+      Flag để awareness, không block. Khi onboard DS thật → upgrade severity.
 
   tokens-compliance.spacing-arbitrary:
-    severity: warn
+    severity: info                  # too noisy không có DS, chỉ info
 
   tokens-compliance.fontsize-arbitrary:
-    severity: warn
+    severity: info
 
   tokens-compliance.radius-arbitrary:
-    severity: warn
+    severity: info
 
+  # ─── Architecture (CHỈ apply rule không yêu cầu Riverpod) ───
   architecture.no-setstate-feature:
-    severity: error
+    severity: info
+    enabled: false                  # DISABLE — project dùng Provider + setState legit
+    note: Stack provider 6.x cho phép setState trong widget local
 
   architecture.no-throw-cross-layer:
-    severity: error
+    severity: warn
+    enabled: true                   # vẫn check — best practice cross-stack
 
   architecture.dio-no-direct-instantiate:
-    severity: error
+    severity: info
+    enabled: false                  # DISABLE — không dùng Dio
 
   architecture.gorouter-no-navigator-push:
-    severity: warn
-    enabled: null                  # TODO: confirm có dùng GoRouter không
+    severity: info
+    enabled: false                  # DISABLE — không dùng GoRouter
 
+  architecture.notifier-missing-autodispose:
+    severity: info
+    enabled: false                  # DISABLE — Provider không có concept autoDispose như Riverpod
+
+  # ─── Icons (downgrade vì không có DS thay thế) ───
   icons-compliance.no-material-icons:
-    severity: error
-    exceptions: []                 # anh add icons exception sau
+    severity: info                  # downgrade: chấp nhận Material Icons cho project này
+    enabled: false                  # DISABLE — no DS → Material Icons là default hợp lý
+    note: Khi có DS thay thế → re-enable
 
   icons-compliance.no-cupertino-icons:
-    severity: error
+    severity: warn                  # vẫn warn, cupertino_icons trong pubspec nhưng nên đồng nhất
 
   icons-compliance.material-import-unused:
-    severity: warn
+    severity: info
 
 state_machines: {}
 
@@ -76,16 +101,21 @@ notify:
   slack_webhook: null
 
 metrics:
-  release_score_min: 80            # khởi đầu thấp, tăng dần
+  release_score_min: 70             # khởi đầu thấp vì legacy stack
   enabled_checks:
-    - tokens-compliance
-    - architecture
-    - icons-compliance
+    - tokens-compliance              # giữ awareness về color/spacing hardcode
+    # - architecture                # SKIP — phần lớn rule không apply legacy stack
+    # - icons-compliance            # SKIP — no DS
+
+# Khi project upgrade lên Riverpod/Dio/GoRouter/DS → enable lại checks tương ứng
 
 history:
   created: 2026-05-27
   last_modified: 2026-05-27
   modified_by: hai
   notes: |
-    Config initial - cần anh fill các field TODO khi onboard project lần đầu.
-    Path placeholder - chưa scan project structure.
+    Project itg-mobile (name: instagram_app) dùng legacy stack provider + http.
+    Đa số rule mặc định KHÔNG apply → disable phần lớn architecture/icons checks.
+    Chỉ giữ tokens-compliance để awareness về hardcode colors.
+
+    Khi nào migrate sang Riverpod + Dio + GoRouter + lme_ui → re-enable checks.

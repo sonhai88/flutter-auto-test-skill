@@ -21,7 +21,86 @@ schema:
   - promote_at: target date for promotion
   - notes: optional
 
-patterns: []
+patterns:
+  - id: pattern-2026-05-27-001
+    title: "Print debug còn sót production code"
+    status: PROPOSED
+    detected_from: pilot-audit-itg-mobile
+    detected_at: 2026-05-27
+    detection_logic: |
+      Grep `print\(` trong lib/ (trừ lib/test/, lib/dev/, file có @visibleForTesting)
+      Suggest: replace với logger package (logger / talker) hoặc xoá trước release
+    examples_caught:
+      - file: /Volumes/hai/itg-mobile/lib/page/auth/login/login_page.dart
+        line: 62
+        snippet: 'print("call signIn api");'
+      - file: /Volumes/hai/itg-mobile/lib/page/auth/login/login_page.dart
+        line: 64
+        snippet: 'print("login success");'
+      - file: /Volumes/hai/itg-mobile/lib/page/auth/login/login_page.dart
+        line: 92
+        snippet: 'print("login failed $error, $stackTrace");'
+    testing_in_project: itg-mobile
+    testing_started: null              # chờ anh approve
+    testing_window_days: 14
+    metrics:
+      true_positives: 0
+      false_positives: 0
+      fp_rate: 0.0
+    promote_at: null
+    notes: |
+      High-value pattern: print() trong production = log thiếu kiểm soát + lộ debug info.
+      Có thể catch >90% case bằng grep đơn giản.
+
+  - id: pattern-2026-05-27-002
+    title: "Responsive magic numbers MediaQuery.size.* * .X/2"
+    status: PROPOSED
+    detected_from: pilot-audit-itg-mobile
+    detected_at: 2026-05-27
+    detection_logic: |
+      Regex: MediaQuery\.of\(context\)\.size\.(width|height)\s*\*\s*\.?\d
+      → flag pattern responsive với magic ratio cần thay bằng constants/package
+    examples_caught:
+      - file: /Volumes/hai/itg-mobile/lib/page/auth/login/login_page.dart
+        lines: [141, 161, 191, 192, 237, 246, 247]
+        note: lặp 7 lần trong 1 file → smell rõ
+    testing_in_project: itg-mobile
+    testing_started: null
+    testing_window_days: 14
+    metrics:
+      true_positives: 0
+      false_positives: 0
+      fp_rate: 0.0
+    promote_at: null
+    notes: |
+      Medium-value. Có thể FP cao nếu project intentional dùng pattern này.
+      Cân nhắc severity INFO, không WARN.
+
+  - id: pattern-2026-05-27-003
+    title: "Nested setState trong .then()/.catchError() chain"
+    status: PROPOSED
+    detected_from: pilot-audit-itg-mobile
+    detected_at: 2026-05-27
+    detection_logic: |
+      AST: Detect `.then(` followed by setState within callback
+      Pattern: nested promise chain với multiple setState calls
+      Suggest: refactor sang async/await + try-catch
+    examples_caught:
+      - file: /Volumes/hai/itg-mobile/lib/page/auth/login/login_page.dart
+        lines: [63, 67, 79, 84, 91, 99, 109]
+        note: signIn().then().catchError().whenComplete() với 5 setState lồng nhau
+    testing_in_project: itg-mobile
+    testing_started: null
+    testing_window_days: 14
+    metrics:
+      true_positives: 0
+      false_positives: 0
+      fp_rate: 0.0
+    promote_at: null
+    notes: |
+      Style rule, không phải bug nhưng làm hard-to-debug.
+      Có thể overlap với linter built-in `prefer_async_await`.
+      Check linter trước khi promote.
 
 # ───────────── EXAMPLES ─────────────
 examples:

@@ -3,21 +3,32 @@
 **Project slug**: itg-mobile
 **Path**: TODO (anh fill khi onboard)
 **Design system**: lme_ui
-**Audited screens**: 0 (chưa audit lần nào)
+**Audited screens**: 1 (LoginPage)
+**Stack**: Provider 6.x + http 1.x + Navigator (legacy, no DS)
+**Path**: /Volumes/hai/itg-mobile
 
 ## Onboarding Checklist
 
-- [ ] Fill `projects/itg-mobile.yaml` với info thật (root_path, repo, Figma file key)
-- [ ] Scan project structure → confirm lib/features/ layout
-- [ ] Confirm GoRouter có dùng không
-- [ ] Lấy Figma file key (nếu có)
-- [ ] Audit 1 screen pilot (em đề xuất LoginScreen hoặc HomeScreen)
-- [ ] Review false positives với em → update fp database
-- [ ] Quyết định checks enable (mặc định: tokens + architecture + icons)
+- [x] Fill `projects/itg-mobile.yaml` — root_path, stack legacy confirmed
+- [x] Scan project structure — lib/page/ thay vì lib/features/ (cấu trúc cũ)
+- [x] Confirm stack: Provider + http + Navigator (no Riverpod/Dio/GoRouter)
+- [ ] Lấy Figma file key (nếu có — chưa có)
+- [x] Audit 1 screen pilot — LoginPage done 2026-05-27, score 38/100
+- [ ] Review FP với anh → update fp database (audit đầu tiên không phát sinh FP)
+- [x] Quyết định checks enable — chỉ tokens-compliance (architecture/icons disabled vì legacy)
 
-## Known Patterns (cập nhật khi audit)
+## Known Patterns
 
-(empty - sẽ append khi audit thực sự)
+### Patterns confirmed (2026-05-27 audit)
+- Hardcode colors lan rộng (15 entries trong LoginPage) → cần extract `AppColors` constants
+- Pattern responsive bằng `MediaQuery.of(context).size.* * .x / 2` — magic numbers
+- `print()` debug còn sót production code (3 entries LoginPage)
+- Nested `setState` trong `.then()/.catchError()` chain — khó debug
+
+### Proposed new patterns (chờ anh approve thành rule)
+- `code-quality.no-print-in-production` — grep `print(` trong lib/ (trừ test/)
+- `code-quality.responsive-magic-numbers` — pattern `MediaQuery.of(context).size.* * .x / 2`
+- `style.async-callback-chain-vs-await` — nested .then().catchError() nên dùng async/await
 
 ## Cross-references
 
