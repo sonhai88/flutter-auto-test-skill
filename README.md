@@ -648,7 +648,7 @@ MIT — dùng tự do, adapt cho stack của anh.
 Built by [@sonhai88](https://github.com/sonhai88) như một phần của Claude Code skill ecosystem cá nhân ([haiclaudeskill](https://github.com/sonhai88/haiclaudeskill)).
 
 Distilled từ production pattern observe trên:
-- 4+ Flutter projects (lme_ui, lsite-mobile, itg-mobile, sailo)
+- 4+ Flutter projects (lme_ui, lsite-mobile, itg-mobile)
 - 100+ commits của QA cycle pain
 - 13 việc tester làm hàng ngày, bóc tách thành automatable vs human-only
 
