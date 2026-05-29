@@ -1,0 +1,47 @@
+# Maestro flow template
+# Docs: https://maestro.mobile.dev/api-reference/commands
+
+appId: REPLACE.WITH.BUNDLE.ID    # e.g. com.wssv.itg.dev
+# tags: [smoke, regression]      # optional, for filtering
+# env:                           # optional
+#   USERNAME: test@example.com
+---
+# 1. Launch app (cold start)
+- launchApp:
+    clearState: true             # reset to first-launch
+    stopApp: true                # kill if running
+
+# 2. Wait for splash → home
+- waitForAnimationToEnd:
+    timeout: 5000                # ms
+
+# 3. Take screenshot after launch
+- takeScreenshot: 01-launched
+
+# 4. Assert UI elements exist
+- assertVisible: "Welcome"       # by text
+# - assertVisible:
+#     id: "homeBanner"           # by accessibility id
+
+# 5. Interact
+- tapOn: "ログイン"               # by text
+- inputText: "test@example.com"  # types into focused field
+- tapOn:
+    id: "passwordField"
+- inputText: "password123"
+- tapOn: "送信"
+
+# 6. Wait for navigation
+- assertVisible: "ホーム"
+- takeScreenshot: 02-home
+
+# 7. Scroll + verify
+- scrollUntilVisible:
+    element: "プロフィール"
+    direction: DOWN
+
+# 8. Test edge case (back button)
+- back
+
+# 9. Done
+- takeScreenshot: 99-final

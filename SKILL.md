@@ -1,32 +1,98 @@
 ---
 name: flutter-auto-test
-description: AI auditor cho Flutter screen — verify Figma fidelity, design system compliance, architecture rules. Self-improving qua FP database + pattern lifecycle. Auto-trigger khi user gõ /flutter-auto-test hoặc nói "audit screen X / kiểm tra UI / test compliance Flutter / xem code khớp Figma chưa".
+description: AI auditor cho Flutter — STATIC (code compliance) + RUNTIME (thao tác app trên iOS Simulator/Android Emulator). Static catch hardcode color/architecture/icons; Runtime catch render drift vs Figma, exception lúc chạy, deep link crash, state coverage thật. Tự control sim qua xcrun + Maestro. Self-improving qua FP database + pattern lifecycle. Auto-trigger: /flutter-auto-test, "audit screen", "test app trên simulator", "kiểm tra UI runtime", "screenshot app", "xem code khớp Figma".
 ---
 
 # Flutter Auto Test Skill
 
 ## Mục đích
 
-Skill này thay thế 70% workload tester thật cho Flutter project:
+Skill thay thế 70% workload tester thật cho Flutter project — **STATIC + RUNTIME**:
 
-- **Figma fidelity**: code có khớp design Figma không
-- **Design system compliance**: dùng đúng token (LmeColors, LmeTypography, LmeSpacing)
+### STATIC (code-level, không cần app chạy)
+- **Design system compliance**: hardcode color, spacing arbitrary, fontsize lệch scale
 - **Architecture rules**: Riverpod + Dio + GoRouter pattern đúng
 - **Icons compliance**: dùng LmeIcons, cấm Material Icons
 - **i18n check**: text tiếng Việt có dấu, không hardcode
-- **States coverage**: loading / error / empty / success có đủ
+- **States coverage** (static): code có handle loading/error/empty không
+
+### RUNTIME (cần iOS Simulator / Android Emulator booted)
+- **Visual Figma drift**: screenshot vs Figma spec — vision-based diff
+- **Runtime exceptions**: parse Flutter log → catch RenderFlex overflow, setState after dispose, PlatformException
+- **States coverage (runtime)**: trigger thật loading/error/empty state, verify render đúng
+- **Deep link validation**: test URL routing không crash với invalid params
+- **Push notification handling**: fake APNs payload, test foreground/background/killed state
+- **Edge case status bar**: low-battery, bad-signal scenarios
 
 **Self-improving**: mỗi lần audit học từ feedback anh → false-positive database + pattern lifecycle.
 
 ## Khi nào trigger
 
+### Static-only mode
 - User gõ `/flutter-auto-test <path>`
-- User nói "audit màn hình X"
-- User nói "kiểm tra UI screen Y khớp Figma chưa"
-- User nói "test compliance file Z.dart"
+- User nói "audit màn hình X", "check compliance file Z"
 - Trước khi commit feature mobile
 
-## Quy trình audit (7 bước)
+### Runtime mode (cần sim/device booted)
+- User gõ `/flutter-auto-test --runtime <screen>`
+- User nói "test app trên simulator", "screenshot app", "check app chạy thế nào"
+- User nói "xem UI runtime khớp Figma chưa"
+- User nói "test deep link / push notification"
+- User nói "catch lỗi lúc app chạy"
+
+### Combined mode (default khi có sim + có code)
+- User gõ `/flutter-auto-test --full <screen>` → chạy cả static + runtime, aggregate report
+
+## Runtime Workflow (NEW v1.2)
+
+Khi user nói "test trên simulator" / "screenshot app" / "audit runtime":
+
+### Bước R1: Detect device
+```bash
+./runtime/scripts/device-list.sh --json
+```
+Nếu không có sim/device → báo "anh boot simulator trước"
+
+### Bước R2: Pre-flight
+```bash
+./runtime/scripts/status-bar.sh apple    # clean status bar
+```
+
+### Bước R3: Capture state hiện tại
+```bash
+SS=$(./runtime/scripts/screenshot.sh --label initial)
+HIER=$(./runtime/scripts/hierarchy.sh --save)
+```
+Em Read screenshot → vision analyze UI.
+
+### Bước R4: Compare với Figma (nếu có URL)
+- Call `mcp__plugin_figma_figma__get_design_context`
+- Em diff per element → output drift report
+
+### Bước R5: Interact (test flow)
+Generate Maestro YAML cho test case → run:
+```bash
+./runtime/scripts/run-flow.sh runtime/maestro-flows/<flow>.yaml
+```
+Mỗi step có `takeScreenshot` → em vision-analyze từng state.
+
+### Bước R6: Test edge cases
+- Deep link invalid: `./runtime/scripts/deep-link.sh "itg://invalid"`
+- Push notification: `./runtime/scripts/push-notification.sh <bundle> <payload>`
+- Low battery: `./runtime/scripts/status-bar.sh low-battery`
+
+### Bước R7: Capture exceptions
+```bash
+./runtime/scripts/stream-logs.sh --seconds 30 --bundle <bundle>
+```
+Em parse log → map về source file:line.
+
+### Bước R8: Report combined
+Aggregate static + runtime findings → markdown report với screenshots inline.
+
+---
+
+## Quy trình audit (7 bước STATIC)
 
 ```
 STEP 1: BOOTSTRAP

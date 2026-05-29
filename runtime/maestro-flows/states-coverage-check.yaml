@@ -1,0 +1,49 @@
+# States Coverage Check
+# Navigate qua các state UI (loading/error/empty/success), screenshot mỗi state
+# → cho Claude vision phân tích state nào có/thiếu
+
+appId: com.wssv.itg.dev
+---
+# Cold launch — screenshot splash + loading state
+- launchApp:
+    clearState: true
+    stopApp: true
+
+- takeScreenshot: 01-cold-launch-loading
+
+# Wait for content load
+- waitForAnimationToEnd:
+    timeout: 8000
+
+- takeScreenshot: 02-loaded-state
+
+# Test EMPTY state — try to navigate to feature with no data
+# (Adapt selector to actual app)
+- runFlow:
+    when:
+      visible: "メッセージ"
+    commands:
+      - tapOn: "メッセージ"
+      - waitForAnimationToEnd
+      - takeScreenshot: 03-message-loaded
+
+      # Try search with no result
+      - runFlow:
+          when:
+            visible:
+              id: "searchField"
+          commands:
+            - tapOn:
+                id: "searchField"
+            - inputText: "zxcvbnmqwerty_no_match_xyz"
+            - takeScreenshot: 04-empty-state-search
+
+# Test ERROR state — kill network and retry
+# Note: simctl network simulation requires manual or Network Link Conditioner
+- back
+
+# Test scroll → end-of-list pagination
+- scroll
+- scroll
+- scroll
+- takeScreenshot: 05-scrolled-bottom

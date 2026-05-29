@@ -6,7 +6,7 @@
 
 **Verify Figma fidelity · Design system compliance · Architecture rules** — tất cả qua một Claude Code skill học từ feedback của anh và sắc bén hơn sau mỗi audit.
 
-[![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](./CHANGELOG.md)
 [![Flutter](https://img.shields.io/badge/Flutter-3.0+-02569B?logo=flutter)](https://flutter.dev)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-skill-D97757?logo=anthropic)](https://docs.anthropic.com/en/docs/claude-code/skills)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](#license)
@@ -195,6 +195,68 @@ Bảng cơ bản trên cover workflow chung. Nhưng release-ready mobile app cò
 | 🔴 **Cần human KHÔNG thay được** | 6/26 | ~10% | Sign-off, compliance, exploratory, IAP, push noti, migration |
 
 → **Skill flutter-auto-test = bedrock layer**. Cặp với 2-3 tool ngoài → automate được ~70% workload. 30% còn lại vẫn cần tester thật (nhưng tập trung vào exploratory + sign-off, không phải chạy test case tay).
+
+---
+
+## 🆕 v1.2.0 — Runtime Audit Layer
+
+Skill giờ **thao tác được trên iOS Simulator / Android Emulator** anh đang mở. Không chỉ đọc code — em **launch app, screenshot, tap, đọc log, test deep link, push notification, low-battery edge case**.
+
+### Capabilities
+
+| | Tool | Install? |
+|---|---|---|
+| 📸 Screenshot | `xcrun simctl` / `adb` | ❌ Built-in |
+| 🚀 Launch / kill app | `xcrun simctl` | ❌ |
+| 🌳 UI hierarchy | Maestro | ✅ 1 command |
+| 👆 Tap / Swipe / Type | Maestro | ✅ |
+| 🔗 Deep link test | `xcrun simctl openurl` | ❌ |
+| 🔔 Push notification fake | `xcrun simctl push` | ❌ |
+| 📋 Stream Flutter logs | `log stream` | ❌ |
+| 🪫 Status bar override (low battery, bad signal) | `xcrun simctl status_bar` | ❌ |
+| 🎥 Record video | `xcrun simctl io recordVideo` | ❌ |
+| 🎭 Visual diff vs Figma | Claude vision + Figma MCP | ❌ |
+
+### Setup
+
+```bash
+# 1. Install Maestro (1 lần)
+curl -Ls "https://get.maestro.mobile.dev" | bash
+
+# 2. Boot simulator
+xcrun simctl boot "iPhone 15 Pro"
+
+# 3. Trigger runtime audit
+/flutter-auto-test --runtime LoginPage
+```
+
+### Quick demo
+
+```bash
+cd ~/.claude/skills/flutter-auto-test/runtime/scripts
+
+./device-list.sh                           # confirm sim booted
+./status-bar.sh apple                      # clean 9:41 baseline
+./launch-app.sh com.your.app --cold
+./screenshot.sh --label initial            # capture state
+./stream-logs.sh --seconds 30 --bundle com.your.app &
+./deep-link.sh "yourapp://feature/123"     # test routing
+./push-notification.sh com.your.app '{"aps":{"alert":"Test"}}'
+./status-bar.sh low-battery                # edge case
+./screenshot.sh --label low-battery
+./status-bar.sh clear
+```
+
+### Real bug em đã catch trong demo trên itg-mobile
+
+🔴 **Missing `CFBundleURLTypes` in Info.plist** → app KHÔNG handle deep link URL scheme. Static check không bao giờ catch được vì:
+- Code Flutter có thể có deep link handler hoàn chỉnh
+- Nhưng iOS native config thiếu → OS error khi user click link
+- Marketing campaign / push noti routing silent fail
+
+→ Đây là **value proposition** của runtime layer.
+
+Xem [demo report đầy đủ](./reports/2026-05-28/itg-mobile/_runtime-demo.md).
 
 ---
 
@@ -545,7 +607,7 @@ notify:
 
 ## 🗺️ Roadmap
 
-### v1.0 ─ Foundation *(hiện tại)*
+### v1.0 ─ Foundation *(done)*
 - [x] 3 core checks: tokens / architecture / icons
 - [x] 4-gate anti-FP filtering
 - [x] Multi-project config layering
@@ -553,10 +615,21 @@ notify:
 - [x] Pattern lifecycle (PROPOSED → TESTING)
 - [x] Manual feedback loop
 
-### v1.1 ─ Figma + Coverage
-- [ ] Figma fidelity check qua MCP
+### v1.2 ─ Runtime Layer *(hiện tại)* 🆕
+- [x] iOS Simulator control (xcrun simctl)
+- [x] Maestro integration (tap/swipe/UI hierarchy)
+- [x] Screenshot + vision analysis
+- [x] Deep link validation
+- [x] Push notification fake
+- [x] Status bar edge cases (low battery, bad signal)
+- [x] Log streaming + exception parse
+- [x] Visual Figma drift check
+- [x] Real-world bug caught: Missing URL scheme in itg-mobile
+
+### v1.3 ─ Figma + Coverage
+- [ ] Figma fidelity check qua MCP (full automation)
 - [ ] i18n check
-- [ ] States coverage (loading/error/empty/success)
+- [ ] States coverage (loading/error/empty/success) — static + runtime
 - [ ] Git history mining cron
 - [ ] CI integration qua GitHub Actions
 

@@ -1,0 +1,22 @@
+# Deep Link Validation
+# Test app routes correctly when opened via URL
+
+appId: com.wssv.itg.dev
+---
+- launchApp:
+    clearState: true
+
+- openLink: "itg://message/123"
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: deep-link-message
+- assertVisible: "メッセージ"        # adjust per app
+
+# Test invalid deep link → should NOT crash
+- openLink: "itg://invalid/path/xyz"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: deep-link-invalid
+# Assert app still alive (not crashed) — assert any element from home/error page
+- assertVisible:
+    text: ".+"                        # any text means UI alive

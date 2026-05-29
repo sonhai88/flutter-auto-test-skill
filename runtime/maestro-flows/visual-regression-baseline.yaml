@@ -1,0 +1,49 @@
+# Visual Regression Baseline
+# Cold-start app → screenshot every key screen for baseline
+# Re-run after change → diff baselines
+
+appId: com.wssv.itg.dev
+---
+# Reset to apple marketing status bar for clean baseline
+# (Run scripts/status-bar.sh apple before this flow)
+
+- launchApp:
+    clearState: true
+    stopApp: true
+
+- waitForAnimationToEnd:
+    timeout: 8000
+
+# Screen 1: Home / Splash
+- takeScreenshot: home
+
+# Screen 2: Navigate to a key feature
+- runFlow:
+    when:
+      visible: "メッセージ"
+    commands:
+      - tapOn: "メッセージ"
+      - waitForAnimationToEnd
+      - takeScreenshot: messages
+
+# Screen 3: Detail view
+- runFlow:
+    when:
+      visible:
+        text: ".*"     # any list item
+    commands:
+      - tapOn:
+          index: 0
+      - waitForAnimationToEnd
+      - takeScreenshot: message-detail
+
+# Screen 4: Settings
+- back
+- back
+- runFlow:
+    when:
+      visible: "設定"
+    commands:
+      - tapOn: "設定"
+      - waitForAnimationToEnd
+      - takeScreenshot: settings
